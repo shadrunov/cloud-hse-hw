@@ -1,1 +1,1 @@
-# basic terrafor & YC configuration
+# basic terraform & YC configuration
