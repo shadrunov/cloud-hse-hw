@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  logbroker:
+    container_name: back
+    image: registry.miem.hse.ru/asshadrunov/hw2-cloud:latest
+    environment:
+      - LOGBROKER_CH_HOST=192.168.1.7
+      - BACK1_IP=192.168.1.5
+      - BACK2_IP=192.168.1.6
+      - LOG_FILE=/app/files/example.log
+      - DATA_FILE=/app/files/data.txt
+      - ERRORS_FILE=/app/files/errors.txt
+      - UNDELIVERED_FILE=/app/files/undelivered.txt
+      - TABLE_FOR_UNDELIVERED=kek
+      - TIME_INTERVAL=2
+
+    command: bash -c "uvicorn server:app --host 0.0.0.0 --port 8000"
+    volumes:
+      - vol:/app/files/
+    ports:
+      - 80:8000
+volumes:
+  vol:

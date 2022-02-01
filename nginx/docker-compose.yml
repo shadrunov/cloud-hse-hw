@@ -1,0 +1,20 @@
+version: '3.7'
+services:
+  nginx:
+    image: "nginx"
+    container_name: nginx
+    command: >
+      /bin/bash -c "echo \"upstream myapp {
+            server 192.168.1.5;
+            server 192.168.1.6;
+        }
+        server {
+            listen 80;
+            location / {
+                proxy_pass http://myapp;
+            }
+        }\" > /etc/nginx/conf.d/default.conf; 
+        /usr/sbin/nginx -g \"daemon off; master_process on;\""
+    ports:
+      - "80:80"
+    restart: always

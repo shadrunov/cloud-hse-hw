@@ -1,0 +1,54 @@
+version: '3.7'
+services:
+  server:
+    container_name: server
+    image: "yandex/clickhouse-server"
+    ports:
+      - "80:80"
+      - "8123:8123"
+      - "9000:9000"
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    volumes:
+      - datavolume:/var/lib/clickhouse
+    restart: always
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "localhost:8123/ping"]
+      interval: 20s
+      timeout: 5s
+      retries: 3
+  client:
+    container_name: client
+    image: "yandex/clickhouse-client"
+    entrypoint: >  
+      bash -c "
+      /usr/bin/clickhouse-client 
+      --host server 
+      --query=\"CREATE TABLE IF NOT EXISTS default.kek 
+        (
+          a Int32, 
+          b String
+        ) 
+        ENGINE = MergeTree() 
+        PRIMARY KEY a 
+        ORDER BY a;\";
+      /usr/bin/clickhouse-client 
+      --host server 
+      --query=\"SHOW DATABASES;\";
+      /usr/bin/clickhouse-client 
+      --host server 
+      --query=\"SHOW TABLES\";"
+    restart: on-failure
+    depends_on:
+      server:
+        condition: service_healthy
+
+volumes:
+  datavolume:
+
+# sudo docker exec -it charming_swartz /usr/bin/clickhouse-client --host clickhouse-server --query="CREATE TABLE IF NOT EXISTS default.kek (a Int32, b String) ENGINE = MergeTree() PRIMARY KEY a ORDER BY a;"
+# /usr/bin/clickhouse-client --host clickhouse-server --query="CREATE TABLE IF NOT EXISTS default.kek (a Int32, b String) ENGINE = MergeTree() PRIMARY KEY a ORDER BY a;"
+
+# sudo docker logs client
