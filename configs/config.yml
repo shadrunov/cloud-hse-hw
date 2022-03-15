@@ -1,0 +1,29 @@
+status:
+  port: 16241
+
+storages:
+  - name: main
+    plugin: fs
+    config:
+      directory: /var/lib/yandex/unified_agent/main
+      max_partition_size: 100mb
+      max_segment_size: 10mb
+
+routes:
+  - input:
+      plugin: metrics_pull
+      config:
+        namespace: todo
+        url: http://130.193.53.214/metrics
+        format:
+          prometheus: {}
+    channel:
+      pipe:
+        - storage_ref:
+            name: main
+      output:
+        plugin: yc_metrics
+        config:
+          folder_id: "b1glopk0ffss77ku36od"
+          iam:
+            cloud_meta: {}

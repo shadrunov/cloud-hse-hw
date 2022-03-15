@@ -1,0 +1,12 @@
+#cloud-config
+users:
+  - name: alex
+    groups: sudo
+    shell: /bin/bash
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    ssh-authorized-keys:
+      - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDgzJOxpZuh4N0KDcOq+To+oBPr8kmp69GMDb0qI2t5t asshadrunov@miem.hse.ru
+    lock_passwd: false
+    passwd: $6$rounds=4096$q.QI0F.11ihNYQqF$osGt8Vos/7RpIge7TJsAWVy1nMO7Qhnq6/JywpMqJXc1heLXTwbezvrWy8k1/nKjLL1g6ik6h3PU9o0tECFs7/
+    ssh_import_id:
+    - gh:shadrunov

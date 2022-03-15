@@ -1,0 +1,3 @@
+[Connection: close]
+[Host: target.example.com]
+/
